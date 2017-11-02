@@ -16,7 +16,7 @@ def get_state_options():
     state = ""
     for c in counties:
         if not c["State"] == state:
-          options += Markup("<option value=/"" + c["State"] + "\">" + c["State"] + "</option>")
+          options += Markup("<option value=\"" + c["State"] + "\">" + c["State"] + "</option>")
           state = c["State"]
           
     return render_template('home.html', options = options)
