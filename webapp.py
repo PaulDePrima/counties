@@ -1,6 +1,6 @@
 from flask import Flask, url_for, render_template, request, Markup, flash
-import os
-import json
+import os, json, random
+
 
 app = Flask(__name__)
 
@@ -14,7 +14,7 @@ def render_main():
 @app.route("/home")
 def render_response():
     state = request.args["state"]
-    return render_template('home.html', options = get_state_options(),response = your_interesting_demographic_function(state))
+    return render_template('home.html', options = get_state_options(),response = your_interesting_demographic_function2(state))
 
 def get_state_options():
         
@@ -39,6 +39,31 @@ def your_interesting_demographic_function(stateName):
     return state + ": " + county + ": " + word + str(employ)
 
 
+def your_interesting_demographic_function2(stateName):
+    countBegin = 0
+    countEnd = 0
+    while not counties[countBegin]["State"] == stateName:
+       countBegin += 1
+    while counties[countBegin + countEnd]["State"] == stateName:
+       countEnd += 1
+       
+    countyNum = random.randint(countBegin, countBegin+countEnd)
+    countyDem = {c: v for c, v in counties[countyNum].items() if not v == stateName and not v == counties[countyNum]["County"]}
+    countyFact = random.choice(list(countyDem.keys()))
+    randKey = ""
+    randKey2 = ""
+    if type(countyDem[countyFact]) == dict: 
+       randKey = random.choice(list(countyDem[countyFact].keys()))
+       print(0.1)
+       if type(countyDem[countyFact][randKey]) == dict:
+          randKey2 = random.choice(list(countyDem[countyFact][randKey].keys()))
+          print(0.2)
+          return str(stateName + ": "+ counties[countyNum]["County"] + ": " + countyFact + ": " + randKey + ": " + randKey2 + ": " + str(countyDem[countyFact][randKey][randKey2]))
+       else:
+          return str(stateName + ": "+ counties[countyNum]["County"] + ": " + countyFact + ": " + randKey + ": " + str(countyDem[countyFact][randKey]))   
+    else:
+       print(0.11)
+       return stateName + ": "+ counties[countyNum]["County"] + ": " + countyFact + ": " + str(countyDem[countyFact])
+              
 if __name__=="__main__":
     app.run(debug=False, port=54321)
-
